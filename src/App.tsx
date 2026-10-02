@@ -1,5 +1,6 @@
-import { useTicTacToe} from "./useTicTacToe.js";
+import { useGameStore } from "./store/useGameStore.ts";
 import {type BoardState, calculateWinner, type SquareValue} from "./utils.js";
+import {useEffect} from "react";
 
 interface SquareProps {
   value: SquareValue;
@@ -90,16 +91,27 @@ export default function Game() {
   const {
     history,
     currentMove,
-    xIsNext,
-    currentSquares,
     isAscending,
     setIsAscending,
     isVsComputer,
     setIsVsComputer,
     handlePlay,
     jumpTo,
-    handleReset
-  } = useTicTacToe();
+    handleReset,
+    makeComputerMove
+  } = useGameStore();
+
+  // Derived state
+  const xIsNext = currentMove % 2 === 0;
+  const currentSquares = history[currentMove].squares;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      makeComputerMove();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [currentMove, makeComputerMove]);
 
   const moves = history.map((step, move) => {
     const location = step.location;

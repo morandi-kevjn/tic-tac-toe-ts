@@ -6,7 +6,7 @@ export type GameHistory = {
     location: string | null;
 }[];
 
-export function useTicTacToe() {
+export function _useTicTacToe() {
     // create the history and currentMove and set to localStorage
     const [history, setHistory] = useState<GameHistory>(() => {
         const savedGame = localStorage.getItem("ticTacToeHistory");

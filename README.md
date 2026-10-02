@@ -25,16 +25,20 @@ A fully functional Tic-Tac-Toe game built with React, TypeScript, and Vite. This
 
 ## 🧠 What I Learned
 
+## 🧠 What I Learned
+
 ### React Concepts
 - Separating UI components from logic using **Custom Hooks** (`useTicTacToe.ts`).
-- Managing complex state arrays (History) and time-traveling through them.
-- Using `useEffect` to sync state with Local Storage and trigger a computer opponent.
-- Avoiding the "stale closure" trap using `useCallback`.
+- **Global State Management:** Migrating from local component state to a global **Zustand** store to avoid prop drilling.
+- **State Persistence:** Using Zustand's `persist` middleware to automatically save game state to Local Storage.
+- Avoiding the "stale closure" trap using `useCallback` (pre-Zustand).
 - Extracting pure helper functions into a `utils.ts` file.
 
 ### TypeScript Concepts
 - Defining **Interfaces** for React component props (`SquareProps`, `BoardProps`).
+- Defining **Interfaces for Global Stores** (`GameState`).
 - Creating **Type Aliases** for complex data structures (`GameHistory`, `BoardState`, `SquareValue`).
-- Applying **Generics** to React hooks (`useState<GameHistory>`, `useCallback<...>`).
+- Applying **Generics** to React hooks (`useState<GameHistory>`) and Zustand (`create<GameState>()`).
 - Handling strict null checks (fixing `Type 'boolean | null' is not assignable to type 'boolean'`).
 - Using **Type Guards** (e.g., `.filter((val): val is number => val !== null)`).
+- **Immutable Updates:** Safely updating nested arrays in the store without mutating original state.Immutable Updates:** Safely updating nested arrays in the store without mutating original state.
