@@ -110,15 +110,11 @@ export default function Game() {
 
   // Send the result to the backend when the game ends
   useEffect(() => {
-    const reportResult = async () => {
-      if (winner) {
-        await updateLeaderboard(winner as "X" | "O");
-      } else if (isDraw) {
-        await updateLeaderboard("Draw");
-      }
-    };
-
-    void reportResult();
+    if (winner) {
+      updateLeaderboard(winner as "X" | "O");
+    } else if (isDraw) {
+      updateLeaderboard("Draw");
+    }
   }, [winner, isDraw, updateLeaderboard]);
 
   // AI Turn Effect

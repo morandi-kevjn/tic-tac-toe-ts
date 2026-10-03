@@ -16,6 +16,8 @@ A fully functional Tic-Tac-Toe game built with React, TypeScript, and Vite. This
 - **React** (State, Effects, Custom Hooks)
 - **TypeScript** (Interfaces, Type Aliases, Generics)
 - **Zustand** (Global State Management & Persistence)
+- **TanStack Query (React Query)** (Server State Management, Caching, Mutations)
+- **Axios** (HTTP Client)
 - **Node.js / Express** (Custom Backend API)
 - **Vite** (Build tool)
 
@@ -23,9 +25,7 @@ A fully functional Tic-Tac-Toe game built with React, TypeScript, and Vite. This
 1. Clone the repository
 2. Install dependencies: `npm install`
 3. Start the development server: `npm run dev`
-
-## 🧠 What I Learned
-
+\
 ## 🧠 What I Learned
 
 ### React Concepts
@@ -34,6 +34,8 @@ A fully functional Tic-Tac-Toe game built with React, TypeScript, and Vite. This
 - **State Persistence:** Using Zustand's `persist` middleware to automatically save game state to Local Storage.
 - Avoiding the "stale closure" trap using `useCallback` (pre-Zustand).
 - Extracting pure helper functions into a `utils.ts` file.
+- **Server State Management:** Migrating from manual `useEffect` + `axios` fetching to **TanStack Query** for automatic caching, background updates, and seamless data mutations.
+- **Mutations & Cache Invalidation:** Using `useMutation` and `queryClient.invalidateQueries` to ensure the UI stays perfectly in sync with the backend after a game ends.
 
 ### TypeScript Concepts
 - Defining **Interfaces** for React component props (`SquareProps`, `BoardProps`).

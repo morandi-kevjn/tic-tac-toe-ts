@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
+import axios from "axios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // The URL of your backend
 const API_URL = "http://localhost:3001/api/leaderboard";
@@ -9,57 +10,44 @@ interface Leaderboard {
     Draw: number;
 }
 
+// API Calls (Pure functions)
+const fetchLeaderboardApi = async (): Promise<Leaderboard> => {
+    const { data } = await axios.get(API_URL);
+    return data;
+};
+
+const updateLeaderboardApi = async (winner: "X" | "O" | "Draw"): Promise<Leaderboard> => {
+    const { data } = await axios.post(API_URL, { winner });
+    return data;
+};
+
 export function useLeaderboard() {
-    const [leaderboard, setLeaderboard] = useState<Leaderboard>({
-        X: 0, O: 0, Draw: 0
+    const queryClient = useQueryClient();
+
+    // useQuery handles ladiong, error and caching automatically
+    const {
+        data: leaderboard = { X: 0, O: 0, Draw: 0 },
+        isLoading,
+        error
+    } = useQuery({
+        queryKey: ['leaderboard'],
+        queryFn: fetchLeaderboardApi
     });
 
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-
-    // Fetch the current leaderboard
-    const fetchLeaderboard = useCallback(async () => {
-        try {
-            const response = await fetch(API_URL);
-            if (!response.ok) {
-                setError("Failed to fetch leaderboard");
-                return;
-            }
-
-            const data = await response.json();
-            setLeaderboard(data);
-            setError(null);
-        } catch (err: unknown) {
-            setError(err instanceof Error ? err.message :
-                "An unknown error occurred.");
-        } finally {
-            setLoading(false);
+    // useMutation handles the POST request
+    const mutation = useMutation({
+        mutationFn: updateLeaderboardApi,
+        onSuccess: () => {
+            void queryClient.invalidateQueries({
+                queryKey: ["leaderboard"]
+            });
         }
-    }, []);
+    })
 
-    // Update the leaderboard with a new win
-    const updateLeaderboard = useCallback(async (winner: "X" | "O" | "Draw") => {
-       try {
-           const response = await fetch(API_URL, {
-               method: "POST",
-               headers: { "Content-Type": "application/json" },
-               body: JSON.stringify({ winner })
-           });
-
-           if (!response.ok) throw new Error("Failed to update leaderboard");
-
-           const data = await response.json();
-           setLeaderboard(data);
-
-       } catch (err: any) {
-           setError(err.message);
-       }
-    }, []);
-
-    // Fetch once when the component mounts
-    useEffect(() => {
-        fetchLeaderboard();
-    }, [fetchLeaderboard]);
-
-    return { leaderboard, loading, error, updateLeaderboard, fetchLeaderboard };
+    return {
+        leaderboard,
+        loading: isLoading,
+        error: error ? error.message : null,
+        updateLeaderboard: mutation.mutate
+    }
 }
