@@ -10,13 +10,14 @@ A fully functional Tic-Tac-Toe game built with React, TypeScript, and Vite. This
 - **Winning Highlight:** Visually highlights the three squares that secured the victory.
 - **Persistence:** Automatically saves your game state to Local Storage so you can refresh the page without losing progress.
 - **Sorting:** Toggle the move history between ascending and descending order.
+- **Leaderboard API:** Connects to a custom Node.js/Express backend to save and display persistent win/loss/draw statistics.
 
 ## 🛠️ Tech Stack
 - **React** (State, Effects, Custom Hooks)
 - **TypeScript** (Interfaces, Type Aliases, Generics)
+- **Zustand** (Global State Management & Persistence)
+- **Node.js / Express** (Custom Backend API)
 - **Vite** (Build tool)
-- **CSS** (Grid & Flexbox)
-- **Local Storage** (Browser API)
 
 ## 🚀 How to Run
 1. Clone the repository
