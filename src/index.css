@@ -92,3 +92,27 @@ body {
 .game-info {
   margin-left: 20px;
 }
+
+.leaderboard {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.leaderboard h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.leaderboard ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.leaderboard li {
+  font-weight: bold;
+}

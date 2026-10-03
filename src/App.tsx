@@ -1,6 +1,7 @@
 import { useGameStore } from "./store/useGameStore.ts";
 import {type BoardState, calculateWinner, type SquareValue} from "./utils.js";
 import {useEffect} from "react";
+import { useLeaderboard } from "./hooks/useLeaderboard.ts";
 
 interface SquareProps {
   value: SquareValue;
@@ -89,22 +90,38 @@ function Board({xIsNext, squares, onPlay}: BoardProps) {
 
 export default function Game() {
   const {
-    history,
-    currentMove,
-    isAscending,
-    setIsAscending,
-    isVsComputer,
-    setIsVsComputer,
-    handlePlay,
-    jumpTo,
-    handleReset,
-    makeComputerMove
+    history, currentMove, isAscending, setIsAscending,
+    isVsComputer, setIsVsComputer, handlePlay, jumpTo,
+    handleReset, makeComputerMove
   } = useGameStore();
+
+  // Initialize the leaderboard hook
+  const { leaderboard, loading, error, updateLeaderboard } = useLeaderboard();
 
   // Derived state
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove].squares;
 
+  // Calculate if the game is over
+  const winningLine = calculateWinner(currentSquares);
+  const winner = winningLine ? currentSquares[winningLine[0]] : null;
+  const isDraw = !winner && currentSquares.every(
+      (sq) => sq !== null);
+
+  // Send the result to the backend when the game ends
+  useEffect(() => {
+    const reportResult = async () => {
+      if (winner) {
+        await updateLeaderboard(winner as "X" | "O");
+      } else if (isDraw) {
+        await updateLeaderboard("Draw");
+      }
+    };
+
+    void reportResult();
+  }, [winner, isDraw, updateLeaderboard]);
+
+  // AI Turn Effect
   useEffect(() => {
     const timer = setTimeout(() => {
       makeComputerMove();
@@ -154,6 +171,20 @@ export default function Game() {
             Sort {isAscending ? 'Descending' : 'Ascending'}
           </button>
           <ol>{sortedMoves}</ol>
+
+          <div className="leaderboard">
+            <h3>🏆 Leaderboard</h3>
+            {loading && <p>Loading scores...</p>}
+            {error && <p style={{ color: "red" }}>Error: {error}</p>}
+
+            {!loading && !error && (
+                <ul>
+                  <li>X Wins: {leaderboard.X}</li>
+                  <li>O Wins: {leaderboard.O}</li>
+                  <li>Draws: {leaderboard.Draw}</li>
+                </ul>
+            )}
+          </div>
         </div>
       </div>
   );
